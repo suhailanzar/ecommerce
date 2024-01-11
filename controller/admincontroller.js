@@ -188,7 +188,7 @@ const controls = {
       console.log('order',orders);
       let addressDetails;
       for (let address of orders) {
-        addressDetails = await Address.find({_id:address.addressid});
+        addressDetails = await Address.findById(address.addressid);
       }
       console.log(addressDetails,"hereeeeee");
       // Create a PDF document
