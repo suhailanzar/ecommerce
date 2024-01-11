@@ -185,12 +185,12 @@ const controls = {
         },
         "products.status": "Delivered",
       });
-
+      console.log('order',orders);
       let addressDetails;
       for (let address of orders) {
-        addressDetails = await Address.findById(address.addressid);
+        addressDetails = await Address.find({_id:address.addressid});
       }
-
+      console.log(addressDetails,"hereeeeee");
       // Create a PDF document
       const doc = new PDFDocument();
       const filename = "sales_report.pdf";
