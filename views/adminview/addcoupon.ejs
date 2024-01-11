@@ -1,0 +1,100 @@
+
+<%- include('header') -%>
+
+
+
+
+<div class="card coupon-form w-25 mx-auto mt-5">
+    <div class="card-body">
+        <h5 class="card-title text-center mb-4">ADD COUPON</h5>
+        <form class="" action="/addcouponpost" method="post">
+            <div class="mb-3">
+                <label for="couponCode" class="form-label">Coupon Code</label>
+                <input type="text" class="form-control" id="couponCode" name="couponcode">
+            </div>
+            <div class="mb-3">
+                <label for="discount" class="form-label">Discount</label>
+                <input type="number" class="form-control" id="discount" name="discount">
+            </div>
+            <div class="mb-3">
+                <label for="expireDate" class="form-label">Expire Date</label>
+                <input type="date" class="form-control" id="expireDate" name="selectedDate">
+            </div>
+            <div class="mb-3">
+                <label for="minPrice" class="form-label">Minimum Purchase</label>
+                <input type="number" class="form-control" id="minPrice" name="minprice">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">Apply Coupon</button>
+            </div>
+        </form>
+        
+    </div>
+</div>
+
+
+
+<style>
+
+
+h3 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: inherit;
+}
+
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+}
+
+nav li:hover {
+    background-color: #ebe3e3;
+    border-radius: 5px;
+}
+
+.formdiv{
+    margin-top: 3em;
+}
+
+.divall{
+    width: 100%;
+    border-radius: 3px;
+}
+
+.navstyle{
+    background-color: rgba(255, 255, 255, 0.194)
+}
+
+/* ... (unchanged styles) ... */
+
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 8px 9px rgba(0, 0, 0, 0.1);
+}
+
+.coupon-form {
+    background-color: #fff;
+    padding: 20px;
+}
+
+.apply-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #fb641b; /* Flipkart orange color */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+</style>
+
+
+<%- include('footer') -%>

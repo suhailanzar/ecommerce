@@ -1,0 +1,147 @@
+<%- include('header') -%>
+
+<style>
+	body{
+ 
+ background-image: url('/img/platinum.jpg');
+ background-size: auto; /* This ensures the image covers the entire background */
+ 
+ }
+   </style>
+		
+
+
+						<div class="text-center text-dark center-div " id="login" style="padding-top: 8%;">
+							<div class="container  border-3 bg-light rounded-4 py-4  mt-2 " id="box">
+								<div class="title pb-4">
+									<h4 class=" ">ADMIN LOGIN</h4>  
+									   
+						
+								</div>   
+
+						
+
+									<div id="messageContainer" class="bg-warning"></div>
+
+
+								<form>
+								
+						 
+									<div class="text-start mb-2">
+											
+										<input type="text" class="form-control " placeholder="email" name="email">
+										<span id="email-error" style="color: red;"></span>
+									</div>
+									<div class=" text-start">
+										<input type="password" class="form-control " placeholder="password" name="password">
+										<span id="password-error" style="color: red;"></span>
+										<div>
+										</div>
+										
+
+						
+									</div>
+									<button type="submit" class="btn btn-success  rounded-pill mt-4  w-25"> Submit</button>
+						
+									
+								</form>
+							</div>
+						</div>
+				
+
+
+
+
+
+						<script>
+							document.addEventListener('DOMContentLoaded', function () {
+								document.querySelector('form').addEventListener('submit', async function (event) {
+									console.log('form submitted');
+						
+									var emailInput = document.querySelector('input[name="email"]');
+									var passwordInput = document.querySelector('input[name="password"]');
+									var emailErrorMessage = document.getElementById('email-error');
+									var passwordErrorMessage = document.getElementById('password-error');
+						
+									// Reset error messages
+									emailErrorMessage.style.display = 'none';
+									passwordErrorMessage.style.display = 'none';
+						
+									// Check if email is empty
+									if (emailInput.value.trim() === '') {
+										emailErrorMessage.innerText = 'Email cannot be empty';
+										emailErrorMessage.style.display = 'block';
+										event.preventDefault(); // Prevent form submission
+									} else if (!isValidEmail(emailInput.value.trim())) {
+										emailErrorMessage.innerText = 'Invalid email format';
+										emailErrorMessage.style.display = 'block';
+										event.preventDefault(); // Prevent form submission
+									}
+						
+									// Check if password is empty
+									if (passwordInput.value.trim() === '') {
+										passwordErrorMessage.innerText = 'Password cannot be empty';
+										passwordErrorMessage.style.display = 'block';
+										event.preventDefault(); // Prevent form submission
+									}
+								});
+						
+								// Function to validate email format
+								function isValidEmail(email) {
+									// Use a regular expression for basic email format validation
+									var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+									return emailRegex.test(email);
+								}
+							});
+						</script>
+
+
+			<script>
+			<!-- Async form submission using Fetch -->
+			document.querySelector('form').addEventListener('submit', async function (event) {
+				event.preventDefault();
+
+				// Use FormData to serialize the form data
+				const formData = new FormData(this);
+				try {
+					const response = await fetch('/admin/loginpost', {
+						method: 'POST',
+						body: new URLSearchParams(formData), // Manually set content type to application/x-www-form-urlencoded
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+						},
+					});
+
+					const result = await response.json();
+
+					// Display the message
+					const messageContainer = document.getElementById('messageContainer');
+					messageContainer.innerHTML = `<p>${result.message}</p>`;
+
+					// Show the message container
+					messageContainer.style.display = 'block';
+					setTimeout(() => {
+						messageContainer.style.display = 'none';
+					}, 10000);
+
+					if (result.success) {
+						// Redirect to the specified URL if login is successful
+						window.location.href = result.redirect;
+					}
+				} catch (error) {
+					console.error('Error:', error);
+				}
+			});
+			</script>
+
+
+
+
+
+		
+	
+
+
+	
+
+		<%- include('footer') -%>

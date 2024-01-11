@@ -1,0 +1,69 @@
+<%- include('header') -%>
+
+
+
+
+
+    <div class="container-fluid mt-4">
+
+        <div class="form-container ">
+            <h4> ADD CATEGORY</h4>
+
+            <div class="container w-50 border mt-5">
+                <form class="mt-5" action="/postcategory" method="post">
+                    <div class="mb-3 ">
+                        <label for="UrunID" class="form-label">CATEGORY NAME</label>
+                        <input name="categoryname" type="text" class="form-control" id="catfield">
+                        <p id="email-error" class="text-danger"></p>
+                    </div>
+                    <% if(locals.message){%>
+                        <div class=" text-danger ">
+                            <%=message%>
+                        </div>
+                        <% }%>
+
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-success text-white btn-md w-25 mb-5 btn-submit">
+                                    ADD
+                                </button>
+                            </div>
+                </form>
+
+
+
+
+            </div>
+
+
+
+            <script>
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelector('form').addEventListener('submit', async function (event) {
+
+
+                        var emailInput = document.querySelector('input[name="categoryname"]');
+
+
+                        var emailErrorMessage = document.getElementById('email-error');
+
+                        // Reset error messages
+                        emailErrorMessage.style.display = 'none';
+
+                        if (emailInput.value.trim() === '') {
+                            emailErrorMessage.innerText = 'category cannot be empty';
+                            emailErrorMessage.style.display = 'block';
+                            event.preventDefault(); // Prevent form submission
+
+
+                        }
+                    });
+
+
+                });
+
+            </script>
+
+
+
+            <%- include('footer') -%>

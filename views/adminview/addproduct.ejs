@@ -1,0 +1,282 @@
+<%- include('header') -%>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+
+
+
+<div class="text-center text-primary fw-bolder fs-3  mt-3">
+  ADD PRODUCT
+</div>
+
+
+    <div class="container-fluid col-md-7 d-flex justify-content-center">
+
+
+
+        <form class="mt-2 mb-5 bg-light p-4 rounded-3" action="/addproductpost" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="UrunID" class="form-label">Product Name</label>
+                <input name="productname" type="text" class="form-control w-100" id="UrunID" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="UrunMiktar">category</label>
+                <select name="category" class="form-select w-100" required>
+
+                               <% if (Categories.length > 0) { %>
+                                  <% for (let i = 0; i < Categories.length; i++) { %>
+                                    <% if (Categories[i].isListed) { %>
+                                      <option value="<%= Categories[i]._id %>"><%= Categories[i].category %></option>
+                                    <% } %>
+                                  <% } %>
+                                <% } else { %>
+                                  <p>no items</p>
+                                <% } %>
+                  
+                  </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="UrunMiktar">Price</label>
+                <input name="price" min="1" type="number" class="form-control w-100" required>
+                <span id="priceValidationMessage" style="color: red;"></span>
+
+            </div>
+           
+            <div class="mb-3">
+                <label for="Kategori" class="form-label">Model</label>
+                <input name="model" type="text" class="form-control w-100" required>
+            </div>
+            <div class="mb-3">
+                <label for="Kategori" class="form-label">Description</label>
+                <input name="description" type="text" class="form-control w-100" required>
+            </div>
+            <div class="mb-3">
+                <label for="Kategori" class="form-label">stock</label>
+                <input name="stock" min="1" type="number" class="form-control w-100" required >
+            </div>
+            <div class="mb-3">
+                <label for="UrunImage" class="form-label">Product Image</label>
+                <input name="img" type="file"  multiple class="form-control w-100" id="image" >
+                <div id="image-container" class="mb-5 mt-5"></div> 
+                <div id="cropper-container" class="mt-3 mb-5"></div>
+                <br>  <span id="validationMessage" style="color: red;"></span>
+
+               
+
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit"
+                    class="btn btn-success text-white w-100  mb-5 btn-submit">Add Stock</button>
+            </div>
+        </form>
+
+
+
+        
+
+        
+        
+       
+        <script>
+
+
+
+          const imageContainer = document.getElementById('image-container');
+          let croppers = [];
+          let croppedImagesData = []; // Array to store cropped image data
+          let isSaveClicked = false; // Flag to track if the Save button is clicked
+        
+          document.getElementById('image').addEventListener('change', (event) => {
+            const files = event.target.files;
+        
+            for (const file of files) {
+              const reader = new FileReader();
+        
+              reader.onload = (event) => {
+                const image = new Image();
+                image.src = event.target.result;
+        
+                image.onload = () => {
+                  const containerDiv = document.createElement('div');
+                  containerDiv.className = 'image-container';
+        
+                  const imageElement = document.createElement('img');
+                  imageElement.src = image.src;
+                  containerDiv.appendChild(imageElement);
+        
+                  // Set a fixed height for the container
+                  containerDiv.style.height = '150px';
+        
+                  // Create a new Cropper for each image without a fixed aspect ratio
+                  const cropper = new Cropper(imageElement, {
+                    aspectRatio: NaN, // Allow freeform cropping
+                    viewMode: 1, // Set the cropping mode (0: freeform, 1: restrict to the aspect ratio)
+                  });
+        
+                  // Create a "Save" button for each image
+                  const saveButton = document.createElement('button');
+                  saveButton.className = 'btn btn-success save-button';
+                  saveButton.textContent = 'Save';
+                  saveButton.addEventListener('click', () => {
+                    // Get the cropped image data for the specific cropper
+                    const croppedCanvas = cropper.getCroppedCanvas();
+                    const croppedImageData = croppedCanvas.toDataURL('image/jpeg');
+        
+                    // Store cropped image data in the array
+                    croppedImagesData.push(croppedImageData);
+        
+                    // Optionally, you can remove the "Save" button after saving
+                    containerDiv.removeChild(saveButton);
+        
+                    // Set the flag to indicate that Save button is clicked
+                    isSaveClicked = true;
+                  });
+        
+                  // Create a "Remove" button for each image
+                  const removeButton = document.createElement('button');
+                  removeButton.className = 'btn btn-danger remove-button';
+                  removeButton.textContent = 'Remove';
+                  removeButton.addEventListener('click', () => {
+                    // Remove the corresponding image and cropper
+                    const index = croppers.indexOf(cropper);
+                    if (index !== -1) {
+                      croppers.splice(index, 1);
+                      croppedImagesData.splice(index, 1);
+                    }
+                    containerDiv.remove();
+        
+                    // Reset the flag if there are no images left
+                    if (croppers.length === 0) {
+                      isSaveClicked = false;
+                    }
+                  });
+        
+                  containerDiv.appendChild(saveButton);
+                  containerDiv.appendChild(removeButton);
+        
+                  imageContainer.appendChild(containerDiv);
+                  croppers.push(cropper);
+                };
+              };
+        
+              reader.readAsDataURL(file);
+            }
+          });
+        
+          // Handle form submission (for adding product)
+          document.querySelector('form').addEventListener('submit', async (event) => {
+            // Prevent form submission if Save button is not clicked
+            if (!isSaveClicked) {
+              event.preventDefault();
+              // Show validation message
+              document.getElementById('validationMessage').textContent = 'Please save the image first.';
+            } else {
+              // Add the cropped image data to the form data
+              croppedImagesData.forEach((croppedImageData, index) => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `croppedImages[${index}]`;
+                hiddenInput.value = croppedImageData;
+                document.querySelector('form').appendChild(hiddenInput);
+              });
+        
+              // Optionally, you can also reset the croppers and image containers
+              resetCroppersAndContainers();
+            }
+          });
+        
+          // Function to reset croppers and containers
+          function resetCroppersAndContainers() {
+            // Reset the croppers array
+            croppers = [];
+        
+            // Remove all child elements from the imageContainer
+            while (imageContainer.firstChild) {
+              imageContainer.removeChild(imageContainer.firstChild);
+            }
+        
+            // Clear the file input
+            const fileInput = document.getElementById('image');
+            fileInput.value = '';
+        
+            // Clear the cropped image data array
+            croppedImagesData = [];
+        
+            // Reset the Save button click flag
+            isSaveClicked = false;
+        
+            // Clear the validation message
+            document.getElementById('validationMessage').textContent = '';
+          }
+
+
+
+          document.getElementById('priceInput').addEventListener('input', function () {
+    // Get the current value of the price input
+    const priceValue = parseFloat(this.value);
+
+    // Check if the value is less than 1
+    if (isNaN(priceValue) || priceValue < 1) {
+      // Display an error message
+      document.getElementById('priceValidationMessage').textContent = 'Price must be greater than or equal to 1';
+    } else {
+      // Clear the error message if the value is valid
+      document.getElementById('priceValidationMessage').textContent = '';
+    }
+  });
+
+
+
+
+        </script>
+        
+        
+        
+        
+
+
+
+
+    <style>
+      .image-container {
+        display: inline-block;
+        margin-right: 10px;
+      }
+    
+      .image-container img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .remove-button {
+    display: block;
+    margin-top: 5px;
+    cursor: pointer;
+    color: red;
+    color: aliceblue;
+    width: 16vh;
+  }
+
+
+  
+  .save-button {
+    display: block;
+    margin-top: 5px;
+    width: 16vh;
+
+  }
+    </style>
+
+    
+
+
+
+
+   
+
+        
+
+
+
+
+    <%- include('footer') -%>

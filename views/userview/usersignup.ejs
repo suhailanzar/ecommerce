@@ -1,0 +1,236 @@
+<%- include('header') -%>
+
+
+  <style>
+   body{
+
+background-image: url('/img/monacowall.jpg');
+background-size: cover; /* This ensures the image covers the entire background */
+
+}
+  </style>
+
+
+
+  <div class="container-fluid mt-5 pt-5  text-center text-dark " id="loginform">
+    <div class="container border-3 bg-light rounded-4 py-3 mt-2" id="box">
+      <div class="title pb-5">
+        <h3 class="">SIGN UP HERE</h3>
+      </div>
+      <div id="messageContainer" class="bg-warning"></div>
+
+
+      <form action="/signuppost" method="post" id="signupform">
+        <div class="text-start">
+          <input type="text" class="form-control" placeholder="name" name="name" />
+          <span id="name-error" style="color: red;"></span>
+
+        </div>
+
+        <br>
+
+        <div class="text-start">
+          <input type="text" class="form-control" placeholder="phone" name="phone" maxlength='10' minlength="1" />
+          <span id="phone-error" style="color: red;"></span>
+
+        </div>
+        <br>
+
+
+        <div class="text-start">
+          <input type="text" class="form-control" placeholder="email" name="email" />
+          <span id="email-error" style="color: red;"></span>
+
+        </div>
+        <br>
+
+        <div class="text-start">
+          <input type="password" class="form-control" placeholder="password" name="password" />
+          <span id="password-error" style="color: red;"></span>
+
+          <br>
+
+        </div>
+
+        <div class="text-start">
+          <input type="text" class="form-control" placeholder="referal code" name="refcode" />
+          <span id="ref-error" style="color: red;"></span>
+
+          <br>
+
+        </div>
+
+        <button type="submit" class="btn btn-success  rounded-pill mt-2   w-50">
+          GET OTP
+        </button>
+
+      </form>
+
+
+
+      <div class=" mt-2">
+        <a href="/signin">already have an account ? sign in</a><br />
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script>
+    document.querySelector('form').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      // Use FormData to serialize the form data
+      const formData = new FormData(this);
+      try {
+        const response = await fetch('/signuppost', {
+          method: 'POST',
+          body: new URLSearchParams(formData), // Manually set content type to application/x-www-form-urlencoded
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        });
+
+        const result = await response.json();
+
+        // Display the message
+        const messageContainer = document.getElementById('messageContainer');
+        messageContainer.innerHTML = `<p>${result.message}</p>`;
+
+        // Show the message container
+        messageContainer.style.display = 'block';
+        setTimeout(() => {
+          messageContainer.style.display = 'none'
+        }, 10000);
+
+        if (result.success) {
+          // Redirect to the specified URL if login is successful
+          window.location.href = result.redirect;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelector('form').addEventListener('submit', async function (event) {
+        console.log('form submitted');
+
+        var nameInput = document.querySelector('input[name="name"]');
+        var phoneInput = document.querySelector('input[name="phone"]');
+        var emailInput = document.querySelector('input[name="email"]');
+        var passwordInput = document.querySelector('input[name="password"]');
+        var refInput = document.querySelector('input[name="refcode"]');
+
+
+        var nameErrorMessage = document.getElementById('name-error');
+        var phoneErrorMessage = document.getElementById('phone-error');
+        var emailErrorMessage = document.getElementById('email-error');
+        var passwordErrorMessage = document.getElementById('password-error');
+        var refErrorMessage = document.getElementById('ref-error');
+
+
+
+
+        // Reset error messages
+        emailErrorMessage.style.display = 'none';
+        passwordErrorMessage.style.display = 'none';
+        phoneErrorMessage.style.display = 'none';
+        nameErrorMessage.style.display = 'none';
+        refErrorMessage.style.display = 'none';
+
+
+        //for name validation 
+        if (nameInput.value.trim() === '') {
+          nameErrorMessage.innerText = "name cannot be empty"
+          nameErrorMessage.style.display = 'block';
+          event.preventDefault();
+        }
+
+        //for mobile validation
+        if (phoneInput.value.trim() === '') {
+          phoneErrorMessage.innerText = "phone number cannot be empty"
+          phoneErrorMessage.style.display = 'block';
+          event.preventDefault();
+        }
+        else if (!isPhoneNumberValid(phoneInput.value.trim())) {
+          console.log('phonw not valid');
+          phoneErrorMessage.innerText = 'Enter a valid phone Number';
+          phoneErrorMessage.style.display = 'block';
+          event.preventDefault(); // Prevent form submission
+        }
+
+
+        // Check if email is empty
+        if (emailInput.value.trim() === '') {
+          emailErrorMessage.innerText = 'Email cannot be empty';
+          emailErrorMessage.style.display = 'block';
+          event.preventDefault(); // Prevent form submission
+
+        } else if (!isValidEmail(emailInput.value.trim())) {
+          emailErrorMessage.innerText = 'Invalid email format';
+          emailErrorMessage.style.display = 'block';
+          event.preventDefault(); // Prevent form submission
+        }
+
+        // Validate Password
+        if (passwordInput.value === '') {
+          passwordErrorMessage.innerText = 'Password cannot be empty';
+          passwordErrorMessage.style.display = 'block';
+          event.preventDefault(); // Prevent form submission
+        }
+        if (!isStrongPassword(passwordInput.value)) {
+          passwordErrorMessage.innerText = 'Enter a strong password';
+          passwordErrorMessage.style.display = 'block';
+          event.preventDefault(); // Prevent form submission
+        }
+      });
+
+      function isStrongPassword(password) {
+        // Use a regular expression for strong password validation
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+        return passwordRegex.test(password);
+      }
+
+
+
+
+      // Function to validate email format
+      function isValidEmail(email) {
+        // Use a regular expression for basic email format validation
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+
+      }
+
+
+      // phone number validating
+      function isPhoneNumberValid(phoneNumber) {
+        const phoneRegex = /^\d{10}$/; // Matches exactly 10 digits (0-9)
+        return phoneRegex.test(phoneNumber);
+      }
+    });
+  </script>
+
+
+
+
+
+  <!-- Async form submission using Fetch -->
+
+
+
+
+
+
+
+  <!-- Frontend validation using JS -->
+
+
+
+
+
+  <%- include('footer') -%>

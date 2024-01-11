@@ -1,0 +1,281 @@
+<%- include('header')  -%>
+
+
+   
+<nav class="navbar navbar-expand-lg bg-dark py-4 border-bottom">
+    <div class="container-fluid d-flex justify-content-between">
+        <div class="">
+            <a class="navbar-brand" href="/userpage"><img id="teslalogomain" src="../img/gucci.png" alt=""></a>
+            <button  class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse ms-5 " id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+					<a href="/profileget" style="text-decoration: none;">
+						<svg xmlns="http://www.w3.org/2000/svg" height="23" width="20"
+								viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+								<path fill="#a5a9b1"
+									d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
+							</svg>
+						 <span>
+							<%= userdetails.name %>
+						</span>
+                </li>
+                <li class="ms-5 nav-item nav-item-secondary">
+                    <a href="/getwishlist" style="text-decoration: none;">
+						<svg xmlns="http://www.w3.org/2000/svg" height="23" width="23"
+						viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+						<path fill="#cfd1d3"
+							d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+					</svg>
+                        <span>Wishlist</span>
+                    </a>
+                </li>
+                <li class="ms-5 nav-item nav-item-secondary">
+                    <a href="/cartget" style="text-decoration: none;">
+						<svg xmlns="http://www.w3.org/2000/svg" height="23" width="23"
+						viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+						<path fill="#d7dce5"
+							d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
+					</svg>
+                        <span>Your Cart</span>
+                    </a>
+                </li>
+                <li class="ms-5 nav-item nav-item-secondary">
+                    <a class="" style="text-decoration: none; " onclick='openConfirmDeleteModal("/logout")'>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+       
+    </div>
+</nav>
+<!-- /HEADER -->
+
+
+
+<div class="container my-5 pt-5">
+    <div class="row">
+        <!-- Thumbnails on the left -->
+    
+        <div class="col-12 col-md-2 mb-3 mb-md-0">
+            <div class="row">
+                <% prod.image.forEach((image, index) => { %>
+                    <div class="col-3 col-md-8 mb-3">
+                        <div style="border: 1px solid grey;">
+                            <img src="<%= prod.image[index] %>" alt="<%= prod.productname %>"
+                                class="img-fluid img-thumbnail d-block thumbnail-img" data-index="<%= index %>">
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        
+
+        <!-- Main Product Image and Details -->
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <img src="<%= prod.image[0] %>" alt="Product Image" class="img-fluid big_img" id="mainImage">
+                </div>
+                <div class="col-12 col-md-6 ps-md-5">
+                    <% if (offerdet.length > 0) { %>
+                        <h2 class="mb-4"> <%= prod.productname %> </h2>
+                        <p class="lead"><%= prod.description %></p>
+                        <p><strong>Availability:</strong> <%= prod.stock %></p>
+                        <p>Offer: &#8377; <%= offerdet[0].discount %> </p>
+
+                        <% const offerprice = prod.price - offerdet[0].discount; %>
+                        <p><strong>Total Price : </strong> <s>&#8377;<%= prod.price %></s> <h4>&#8377;<%= offerprice %></h4>
+                        </p>
+                    <% } else { %>
+                        <h2 class="mb-4"> <%= prod.productname %> </h2>
+                        <p class="lead"><%= prod.description %></p>
+                        <p><strong>Availability:</strong> <%= prod.stock %></p>
+                        <div class="d-flex mb-4">
+                            <strong>Price: &nbsp;&nbsp;</strong> <h4> &#8377;<%= prod.price %></h4>
+                        </div>
+                    <% } %>
+
+                    <div class="mb-2">
+                        <% if(prod.stock < 1){ %>
+                            <span class="text-danger">Out of Stock</span>
+                        <% } %>
+                    </div>
+
+                    <a href="/addtocart/<%= prod._id %>"><button class="btn btn-primary">Add to Cart</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<span id="imgg"  data-img= " <%= JSON.stringify(prod) %>"></span>
+
+
+
+<footer id="footer" class="bg-dark mt-5 border-top-secondary">
+    <!-- container -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="footer">
+                    <h4 class="footer-title">About Us</h4>
+                    <ul class="footer-links p-0">
+                        <li><a href="#">1734 Stonecoal Road</a></li>
+                        <li><a href="#">+021-95-51-84</a></li>
+                        <li><a href="#">email@email.com</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="footer">
+                    <h4 class="footer-title">Categories</h4>
+                    <ul class="footer-links p-0">
+                        <li><a href="#">Hot deals</a></li>
+                        <li><a href="#">Laptops</a></li>
+                        <li><a href="#">Smartphones</a></li>
+                        <li><a href="#">Cameras</a></li>
+                        <li><a href="#">Accessories</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <div class="col-md-3 col-sm-6">
+                <div class="footer">
+                    <h4 class="footer-title">Information</h4>
+                    <ul class="footer-links p-0">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Orders and Returns</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="footer">
+                    <h4 class="footer-title">Service</h4>
+                    <ul class="footer-links p-0">
+                        <li><a href="#">My Account</a></li>
+                        <li><a href="#">View Cart</a></li>
+                        <li><a href="#">Wishlist</a></li>
+                        <li><a href="#">Track My Order</a></li>
+                        <li><a href="#">Help</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</footer>
+
+
+
+
+<script src="/js/zoomsl.js"></script> 
+<script src="/js/zoomsl.min.js"></script> 
+
+
+<script>
+    var $ = jQuery.noConflict();
+ $(document).ready(function () {
+    $('.big_img').imagezoomsl({
+      zoomrange: [1, 1]
+    });
+  })
+
+
+  // Define the 'product' variable here by converting it to a JSON string
+//   const prod = <%- JSON.stringify(prod) %>;
+
+const img =document.getElementById('imgg')
+const imgdata = img.getAttribute('data-img')
+const prod = JSON.parse(imgdata)
+
+
+// Now you can use the 'product' variable within this script
+document.addEventListener("DOMContentLoaded", function () {
+    
+    const thumbnails = document.querySelectorAll('.thumbnail-img');
+    const mainImage = document.querySelector('.big_img'); 
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function () {
+            const dataIndex = this.getAttribute('data-index');
+            const newImageSrc = prod.image[dataIndex]; 
+            mainImage.src = newImageSrc;
+        });
+    });
+});
+
+
+
+
+
+</script>
+
+
+
+
+    
+    
+    <!-- Modal HTML -->
+	<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
+	aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmDeleteModalLabel">logout</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				Are you sure want to Logout?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteBtn">logout</button>
+			</div>
+		</div>
+	</div>
+	</div>
+		
+		
+	
+		<script>
+			function openConfirmDeleteModal(url) {
+			$('#confirmDeleteModal').modal('show')
+			$('#confirmDeleteBtn').click(function() {
+				window.location.href = url
+			});
+		}
+		</script>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+  <%- include('footer')  -%>
+
+

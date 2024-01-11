@@ -1,0 +1,156 @@
+<%- include('header') -%>
+
+    <div class="card coupon-form w-25 mx-auto mt-5">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-4">ADD OFFER</h5>
+            <form class="" action="/addofferpost" method="post">
+                <div class="mb-3">
+                    <label for="couponCode" class="form-label">product</label>
+                    <select name="product" class="form-select w-100">
+                        <option value="" disabled selected>Select a product</option>
+
+                        <% if (proddet.length> 0) { %> <% for (let i=0; i < proddet.length; i++) { %>
+                                <% if (proddet[i].isListed) { %>
+                                    <option value="<%= proddet[i].productname %>">
+                                        <%= proddet[i].productname %>
+                                    </option>
+                                    <% } %>
+                                        <% } %>
+                                            <% } else { %>
+                                                <p>no items</p>
+                                                <% } %>
+                    </select>
+                </div>
+                <p class="text-danger" id="productSelect"></p>
+
+
+                <div class="mb-3">
+                    <label for="expireDate" class="form-label">Expire Date</label>
+                    <input type="date" class="form-control" id="expireDate" name="selectedDate" />
+                </div>
+                <p class="text-danger" id="expiredatemsg"></p>
+
+                <div class="mb-3">
+                    <label for="minPrice" class="form-label">discount</label>
+                    <input type="number" class="form-control" id="minPrice" name="discount" />
+                </div>
+                <p class="text-danger" id="discountprice"></p>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Apply Offer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document
+                .querySelector("form")
+                .addEventListener("submit", async function (event) {
+                    var productSelect = document.querySelector('select[name="product"]');
+                    var categorySelect = document.querySelector('select[name="category"]');
+                    var expireDateInput = document.getElementById('expireDate');
+                    var minPriceInput = document.getElementById('minPrice');
+
+                    var productselectmsg = document.getElementById("productSelect");
+                    var discountPriceError = document.getElementById('discountprice');
+                    var expiredatemsg = document.getElementById("expiredatemsg");
+
+
+
+
+                    // Reset error messages
+                    productselectmsg.style.display = "none";
+                    expiredatemsg.style.display = "none";
+                    discountPriceError.style.display = 'none';
+
+                    // Validation for product or category selection
+                    if (productSelect.selectedIndex === 0) {
+                        productselectmsg.innerText = "Select a Product";
+                        productselectmsg.style.display = "block";
+                        event.preventDefault(); // Prevent form submission
+                    }
+
+                    if (!expireDateInput.value) {
+                        expiredatemsg.innerText = "Please select a valid date";
+                        expiredatemsg.style.display = "block";
+                        event.preventDefault(); // Prevent form submission
+                    }
+
+                    if (minPriceInput.value.trim() === '') {
+                        discountPriceError.innerText = 'Discount field cannot be empty';
+                        discountPriceError.style.display = 'block';
+                        event.preventDefault(); // Prevent form submission
+                    }
+
+                    setTimeout(function () {
+                        productselectmsg.style.display = "none";
+                        expiredatemsg.style.display = "none";
+                        discountPriceError.style.display = 'none';
+                    }, 5000);
+                });
+        });
+    </script>
+
+    <style>
+        h3 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: inherit;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        nav li:hover {
+            background-color: #ebe3e3;
+            border-radius: 5px;
+        }
+
+        .formdiv {
+            margin-top: 3em;
+        }
+
+        .divall {
+            width: 100%;
+            border-radius: 3px;
+        }
+
+        .navstyle {
+            background-color: rgba(255, 255, 255, 0.194);
+        }
+
+        /* ... (unchanged styles) ... */
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 8px 9px rgba(0, 0, 0, 0.1);
+        }
+
+        .coupon-form {
+            background-color: #fff;
+            padding: 20px;
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #fb641b;
+            /* Flipkart orange color */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+    <%- include('footer') -%>

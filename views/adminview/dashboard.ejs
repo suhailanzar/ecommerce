@@ -1,0 +1,414 @@
+<%- include('header') -%>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
+  <div class="container-fluid mt-3 ">
+    <div class="row mx-1 ">
+      <!-- Sidebar -->
+
+      <nav id="sidebar" class="col-md-2 col-lg-2 d-md-block sidebar border border-secondary   bg-light">
+        <div class="position-sticky">
+          <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar"
+            aria-controls="sidebar" aria-expanded="false" aria-label="Toggle sidebar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <ul class="nav flex-column ">
+            <li class="nav-item mt-4 border-bottom">
+              <a class="nav-link text-danger" aria-current="page" href="/admin/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item mt-4 border-bottom">
+              <a class="nav-link" href="/admin/usermanagement">Users</a>
+            </li>
+            <li class="nav-item mt-4 border-bottom">
+              <a class="nav-link" href="/Category">Categories</a>
+            </li>
+            <li class="nav-item mt-4 border-bottom">
+              <a class="nav-link" href="/product">Products</a>
+            </li>
+            <li class="nav-item mt-4 border-bottom">
+              <a class="nav-link " href="/orders">Orders</a>
+            </li>
+            <li class="nav-item mt-4 border-bottom">
+              <a class="nav-link " href="/coupon">Coupon</a>
+            </li>
+            <li class="nav-item mt-4 border-bottom">
+              <a class="nav-link " href="/getoffer">Offers</a>
+            </li>
+
+
+            <li class="nav-item mt-4 border-bottom">
+              <a class="nav-link" href="/admin/banner">Banner</a>
+            </li>
+            <li class="nav-item mt-4 ">
+              <a class="nav-link" href="/admin/logout">Logout</a>
+            </li>
+
+          </ul>
+        </div>
+      </nav>
+      <!-- ... (unchanged code) ... -->
+
+      <!-- Main Content -->
+
+      <div class="custom-border maindiv col-md-10 col-lg-10 border border-secondary ">
+        <div class="card coupon-form w-100 mx-auto p-0 overflow-auto">
+          <main class="col-md-8 col-lg-10">
+            <div class="custom-border maindiv p-5">
+              <label for="chartSelector" class="font-weight-bold">Select Chart:</label>
+              <select id="chartSelector" class="form-control mb-3" onchange="updateChart()">
+                <option value="mychart1">Weekly Chart</option>
+                <option value="mychart2">Monthly Chart</option>
+                <option value="mychart3">Yearly Chart</option>
+              </select>
+
+              <div class="chart-container col-md-8 col-lg-9">
+                <canvas id="mychart1" data-dates="<%= JSON.stringify(dates) %>"
+                  data-dailyOrder="<%=JSON.stringify(orderCounts)%>"></canvas>
+                <canvas id="mychart2" data-monthly="<%= JSON.stringify(monthdata) %>"></canvas>
+                <canvas id="mychart3" data-yearlyOrders="<%=JSON.stringify(totalOrderCount3)%>"></canvas>
+              </div>
+
+              <div class="card-body">
+                <div class="chart-pie  ">
+                  <div class="row">
+                    <div class="col">
+                      <input type="date" name="startingdate" id="startingDate" class="form-control" required>
+                      <div id="startingDateError" style="color: red;"></div>
+                    </div>
+                    <div class="col">
+                      <input type="date" name="endingdate" id="endingDate" class="form-control" required>
+                      <div id="endingDateError" style="color: red;"></div>
+                    </div>
+                  </div>
+                  <br>
+                  <button class="btn btn-primary btn-block mb-" onclick="generateReport('pdf')">PDF Report</button>
+                  <button class="btn btn-primary btn-block" onclick="generateReport('excel')">Excel Report</button>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+
+
+
+
+
+    </div>
+  </div>
+
+
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const chart1Container = document.querySelector('#mychart1');
+      const rawDates = chart1Container.getAttribute('data-dates');
+      const dates = JSON.parse(rawDates);
+      const rawDailyOrders = chart1Container.getAttribute('data-dailyOrder');
+      const dailyOrders = JSON.parse(rawDailyOrders);
+
+      const orderEndDate = moment(dates[dates.length - 1]); // Use the last order date as the end date
+      const lastSevenDays = [];
+      let orders = [];
+
+      // Generate labels for the last 7 days from the current date
+      for (let i = 6; i >= 0; i--) {
+        const date = orderEndDate.clone().subtract(i, 'days').format('YYYY-MM-DD');
+        let index = dates.indexOf(date);
+        if (index !== -1) {
+          orders.push(dailyOrders[index]);
+        } else {
+          orders.push(0);
+        }
+        lastSevenDays.push(date);
+      }
+
+      const ctx1 = document.getElementById('mychart1').getContext('2d');
+      const masspopchart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: lastSevenDays,
+          datasets: [{
+            label: 'Weekly Orders',
+            data: orders,
+            backgroundColor: 'rgba(0, 123, 225, 1)',
+            barThickness: 20
+          }]
+        },
+        options: {
+          animation: {
+            duration: 2000,
+            easing: 'easeInOutQuart',
+            onProgress: function (animation) {
+              console.log("progress", animation.progress);
+            },
+            onComplete: function (animation) {
+              console.log('Animation complete');
+            }
+          }
+        }
+      });
+
+
+      // Chart 2
+
+
+
+
+      document.getElementById("mychart2").style.display = "none";
+      const monthlyOrderContainer = document.querySelector('#mychart2');
+
+      // Use getAttribute to retrieve the values
+      const rawMonthlyOrders = monthlyOrderContainer.getAttribute('data-monthly');
+
+      const monthlyData = JSON.parse(rawMonthlyOrders);
+
+      // Get the current year and month
+      const currentDate = new Date();
+      const currentYear1 = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1; // Months are zero-based
+
+      // Generate labels for the next 12 months starting from the current month
+      const monthlyLabels = Array.from({ length: 12 }, (_, index) => {
+        const year = currentMonth + index > 12 ? currentYear1 + 1 : currentYear1;
+        const month = (currentMonth + index) % 12 || 12;
+        return `${year}-${month.toString().padStart(2, '0')}`;
+      });
+
+      const ctx = document.getElementById('mychart2').getContext('2d');
+
+      let masspopchart2 = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: monthlyLabels,
+          datasets: [{
+            label: 'Monthly Orders',
+            data: monthlyData,
+            backgroundColor: 'rgba(0, 0, 255, 0.3)',
+            barThickness: 20
+          }]
+        },
+        options: {
+          animation: {
+            duration: 2000,
+            easing: 'easeInOutQuart',
+            onProgress: function (animation) {
+              console.log(animation.progress);
+            },
+            onComplete: function (animation) {
+              console.log('Animation complete');
+            }
+          },
+          scales: {
+            x: {
+              type: 'category',
+              labels: monthlyLabels,
+              ticks: {
+                autoSkip: false,
+                maxRotation: 45,
+              }
+            },
+            y: {
+              beginAtZero: true,
+            }
+          }
+        }
+      });
+
+      // Chart 3
+      const chart3Container = document.querySelector('#mychart3');
+      document.getElementById("mychart3").style.display = "none";
+      const rawYearlyOrders = chart3Container.getAttribute('data-yearlyOrders');
+      const yearlyOrders = rawYearlyOrders.split(',').map(Number);
+
+      const currentYear = new Date().getFullYear();
+
+      const yearlyLabels = Array.from({ length: 5 }, (_, index) => currentYear + index);
+
+      const ctx3 = document.getElementById('mychart3').getContext('2d');
+
+      let masspopchart3 = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: yearlyLabels,
+          datasets: [{
+            label: 'Yearly Orders',
+            data: yearlyOrders,
+            backgroundColor: ['rgba(144, 238, 144, 20)'],
+            barThickness: 20
+          }]
+        },
+        options: {
+          animation: {
+            duration: 2000,
+            easing: 'easeInOutQuart',
+            onProgress: function (animation) {
+              console.log(animation.progress);
+            },
+            onComplete: function (animation) {
+              console.log('Animation complete');
+            }
+          },
+          scales: {
+            x: {
+              type: 'category',
+              labels: yearlyLabels.map(String),
+              ticks: {
+                autoSkip: false,
+                maxRotation: 45,
+              }
+            },
+            y: {
+              beginAtZero: true,
+            }
+          }
+        }
+      });
+    });
+
+    function updateChart() {
+      var selectedChart = document.getElementById("chartSelector").value;
+
+      // Hide all charts
+      document.getElementById("mychart1").style.display = "none";
+      document.getElementById("mychart2").style.display = "none";
+      document.getElementById("mychart3").style.display = "none";
+
+      // Show the selected chart
+      document.getElementById(selectedChart).style.display = "block";
+    }
+
+  </script>
+
+<script>
+  function generateReport(reportType) {
+    const startingDate = document.getElementById('startingDate').value;
+    const endingDate = document.getElementById('endingDate').value;
+
+    // Reset error messages
+    document.getElementById('startingDateError').innerHTML = '';
+    document.getElementById('endingDateError').innerHTML = '';
+
+    // Check if either starting or ending date is empty
+    if (!startingDate) {
+      document.getElementById('startingDateError').innerHTML = 'Starting date is required';
+      return;
+    }
+
+    if (!endingDate) {
+      document.getElementById('endingDateError').innerHTML = 'Ending date is required';
+      return;
+    }
+
+    // Check if the ending date is before the starting date
+    const startDateObj = new Date(startingDate);
+    const endDateObj = new Date(endingDate);
+
+    if (endDateObj < startDateObj) {
+      document.getElementById('endingDateError').innerHTML = 'Ending date cannot be before starting date';
+      return;
+    }
+
+    // If validation passes, redirect to the appropriate report generation route
+    if (reportType === 'pdf') {
+      window.location.href = `/admin/generate-pdf?startingdate=${startingDate}&endingdate=${endingDate}`;
+    } else if (reportType === 'excel') {
+      window.location.href = `/admin/salesreport?startingdate=${startingDate}&endingdate=${endingDate}`;
+    }
+  }
+</script>
+
+
+<!-- 
+  <script>
+    function generateReport(reportType) {
+      const startingDate = document.getElementById('startingDate').value;
+      const endingDate = document.getElementById('endingDate').value;
+      if (reportType === 'pdf') {
+        // Redirect to the PDF generation route with query parameters
+        window.location.href = `/admin/generate-pdf?startingdate=${startingDate}&endingdate=${endingDate}`;
+      } else if (reportType === 'excel') {
+        // Redirect to the Excel generation route with query parameters
+        window.location.href = `/admin/salesreport?startingdate=${startingDate}&endingdate=${endingDate}`
+      }
+    }
+
+  </script>
+ -->
+
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Bootstrap JS for the responsive sidebar toggle -->
+
+
+
+  <style>
+    h3 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: inherit;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+    }
+
+    nav li:hover {
+      background-color: #ebe3e3;
+      border-radius: 5px;
+    }
+
+    .formdiv {
+      margin-top: 1em;
+    }
+
+    .divall {
+      width: 100%;
+      border-radius: 3px;
+    }
+
+    .navstyle {
+      background-color: rgba(255, 255, 255, 0.194)
+    }
+
+    /* ... (unchanged styles) ... */
+
+    .card {
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .coupon-form {
+      background-color: #fff;
+      padding: 20px;
+    }
+
+    .apply-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #fb641b;
+      /* Flipkart orange color */
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+
+
+  <%- include('footer') -%>

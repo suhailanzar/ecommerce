@@ -1,0 +1,107 @@
+<%- include('header') -%>
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-8 col-lg-8">
+        <!-- Delivery Address Section -->
+        <div class="card mb-4">
+          <div class="card-header">Delivery Address</div>
+          <div class="card-body">
+            <!-- Display delivery address details here -->
+            <p>First Name : <%= useraddress.firstname %>
+            </p>
+            <p>Last Name : <%= useraddress.lastname %>
+            </p>
+            <p>Address : <%= useraddress.address %>
+            </p>
+            <p>City : <%= useraddress.city %>
+            </p>
+            <p>State : <%= useraddress.state %>
+            </p>
+            <p>Pincode : <%= useraddress.pincode %>
+            </p>
+            <p>Phone : <%= useraddress.phone %>
+            </p>
+          </div>
+        </div>
+
+        <!-- Product Info Table -->
+        <div class="card">
+          <div class="card-header">Product Information</div>
+          <div class="card-body table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Discount</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% let amount=0; %>
+                  <% let paymentmethod=null; %>
+                    <% if (Orderdetails && Orderdetails.length> 0) { %> <% Orderdetails.forEach((val, index)=> { %> <%
+                          val.products.forEach((newval, index)=> { %> <% if (productdetails.productname==newval.product)
+                            { %>
+                            <tr>
+                              <td>
+                                <%= productdetails.productname %>
+                              </td>
+                              <td>
+                                <%= newval.quantity %>
+                              </td>
+                              <td>₹ <%= newval.price %>
+                              </td>
+                              <td>
+                                <% let noofproducts=val.products.length;
+                                let discount=(parseInt(newval.discount)) /
+                                  noofproducts; const calculatedprice=(newval.price * newval.quantity) - discount; %> ₹
+                                  <%= discount %>
+                              </td>
+                              <td>
+                                <% paymentmethod=val.paymentmethod %>
+                                  <% amount=(newval.price * newval.quantity) - (discount || 0); %> ₹ <%= amount %>
+                              </td>
+                            </tr>
+                            <% } %>
+                              <% }); %>
+                                <% }); %>
+                                  <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Order Summary Section -->
+      <div class="col-md-3 col-lg-3">
+        <div class="card mb-5  ">
+          <div class="card-header">Order Summary</div>
+          <div class="card-body">
+            <!-- Display order summary details here -->
+            <p>Total Amount: ₹ <%= amount %>
+            </p>
+            <p>Payment Method : <%= paymentmethod %>
+            </p>
+            <a href="/getGeneratePdforder/<%= productdetails._id %>" class="btn btn-primary btn-block">Download
+              Invoice</a>
+          </div>
+        </div>
+
+        <div class="card mt-5">
+          <div class="card-header">Product Image</div>
+          <div class="card-body">
+            <!-- Display order summary details here -->
+            <img src="<%= productdetails.image[0] %>" alt="productimage" style="height: 27vh" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+  <%- include('footer') -%>

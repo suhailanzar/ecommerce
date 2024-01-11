@@ -1,0 +1,177 @@
+  <%- include('header') -%>   
+
+
+
+  
+  <div class="text-center text-primary fw-bolder fs-3  mt-3">
+        EDIT PRODUCT
+  </div>
+
+    
+
+    <div class="container-fluid col-md-7 d-flex justify-content-center">
+
+      
+        
+        <% if(typeof message !=='undefined' ){%>
+            <div class="alert alert-success text-center">
+              <%= message %>
+            </div>
+            <% } %>
+
+
+        <form class="mt-2 mb-5 bg-light p-4 rounded-3" action="/updateproductpost/<%=value._id%>" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="UrunID" class="form-label">Product Name</label>
+                <input name="productname" value="<%= value.productname %>" type="text" class="form-control" id="UrunID" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="UrunMiktar">Category</label>
+                <select name="category" class="form-select select_join" required>
+                    <% if (Categories.length > 0) { %>
+                      <% for (let i = 0; i < Categories.length; i++) { %>
+                        <% if (Categories[i].isListed) { %>
+                          <option value="<%= Categories[i]._id %>" <%= stringValue === Categories[i]._id.toString() ? 'selected' : '' %>>
+                            <%= Categories[i].category %>
+                          </option>
+                        <% } %>
+                      <% } %>
+                    <% } else { %>
+                      <p>No items</p>
+                    <% } %>
+                  </select>
+                  
+                  
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="UrunMiktar">Price</label>
+                <input name="price" id="priceInput" min="1" type="number" value="<%= value.price %>" class="form-control" >
+                <span id="priceValidationMessage" style="color: red;"></span> </div>
+        
+            <div class="mb-3">
+                <label for="Kategori" class="form-label">Model</label>
+                <input name="model" value="<%= value.model %>" type="text" class="form-control"  required>
+            </div>
+            <div class="mb-3">
+                <label for="Kategori" class="form-label">Description</label>
+                <input name="description" value="<%= value.description %>" type="text" class="form-control"  required>
+            </div>
+            <div class="mb-3">
+                <label for="Kategori" class="form-label">stock</label>
+                <input name="stock" min="1" type="number" value="<%= value.stock %>" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="UrunImage" class="form-label">Product Image</label>
+                <input name="img" type="file" multiple class="form-control" name="img" id="imageInput" >
+                <div id="imagePreview">
+                    <br>
+                    <% if (value.image && value.image.length > 0) { %>
+                        <% value.image.forEach((img, index) => { %>
+                            <img src="<%= img %>" alt="Previous Image" style="max-width: 100px; max-height: 100px; margin-right: 10px;">
+                            <button class="remove-image btn btn-danger" data-image="<%= index %>" data-id="<%= value._id %>" type="button">Remove</button>
+                        <% }); %>
+                    <% } %>
+                    <span id="validationMessage" style="color: red;"></span>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-success text-white w-100 mb-5 btn-submit">APPLY CHANGES</button>
+            </div>
+            </form>
+            </div>
+
+
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+
+            <script>
+            
+            $(document).ready(function () {
+            
+                // Delegate the click event to a static parent element
+                $(document).on('click', '.remove-image', function () {
+                    var button = $(this); // Store reference to the button
+                    var productId = button.data('id');
+                    var imageIndex = button.data('image');
+            
+                    $.ajax({
+                        url: '/removeproduct', // Replace with the actual endpoint on your server
+                        method: 'POST', // Use the appropriate HTTP method
+                        data: {
+                            productId: productId,
+                            imageIndex: imageIndex
+                        },
+                        success: function (response) {
+                            // Check if the server operation was successful
+                            if (response === 'Image removed successfully') {
+                                // Update the UI only after the server operation is successful
+                                button.prev('img').remove();
+                                button.remove();
+            
+                                // Check if no images are left in the div
+                                if ($('.remove-image').length === 0) {
+                                    // Update the variable to indicate no images are present
+                                    imagesFound = false;
+                                } else {
+                                    // Update the variable to indicate images are present
+                                    imagesFound = true;
+                                }
+                            } else {
+                                console.error('Server operation failed:', response);
+                            }
+                        },
+                        error: function (error) {
+                            // Handle the error response
+                            console.error(error);
+                        }
+                    });
+                });
+            
+                // Handle file input change
+                $('#imageInput').change(function () {
+                    // Check if files are selected
+                    imagesFound = this.files.length > 0 || $('#imagePreview img').length > 0;
+                });
+            
+                // Handle form submission
+                $('form').submit(function (event) {
+                    // Allow the form submission without displaying a validation message
+                    if (imagesFound) {
+                        // Clear the validation message if images are present
+                        $('#validationMessage').text('');
+                    } else {
+                        // Display a validation message if no images are found
+                        $('#validationMessage').text('Please upload at least one image');
+                        // Prevent the form submission
+                        event.preventDefault();
+                    }
+                });
+            });
+            
+            
+            
+            document.getElementById('priceInput').addEventListener('input', function () {
+                // Get the current value of the price input
+                const priceValue = parseFloat(this.value);
+            
+                // Check if the value is less than 1
+                if (isNaN(priceValue) || priceValue < 1) {
+                  // Display an error message
+                  document.getElementById('priceValidationMessage').textContent = 'Price must be greater than or equal to 1';
+                } else {
+                  // Clear the error message if the value is valid
+                  document.getElementById('priceValidationMessage').textContent = '';
+                }
+              });
+            
+            </script>
+            
+
+      
+    <style>
+
+      </style>
+  
+   
+    <%- include('footer') -%>

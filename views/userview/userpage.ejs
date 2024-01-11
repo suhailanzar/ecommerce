@@ -1,0 +1,598 @@
+<%- include('header') -%>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+
+	<style>
+		body {
+			background-color: rgb(218, 214, 214);
+			/* background-image: url('/img/new1.png');
+		background-size: auto;  */
+		}
+
+		.navbar-nav .nav-item a {
+			color: white !important;
+		}
+	</style>
+
+
+
+	<nav class="navbar navbar-expand-lg bg-dark py-4 border-bottom">
+		<div class="container-fluid d-flex justify-content-between">
+			<div class="mb-2">
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+					aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<a class="navbar-brand ms-4 mb-4" href="/userpage"><img id="teslalogomain" src="../img/gucci.png"
+						alt=""></a>
+
+			</div>
+
+			<div class="collapse navbar-collapse ms-5" id="navbarNav">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item active">
+						<a href="/profileget" style="text-decoration: none;">
+							<svg xmlns="http://www.w3.org/2000/svg" height="23" width="20"
+								viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+								<path fill="#a5a9b1"
+									d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
+							</svg>
+							<span>
+								<%= userdetails.name %>
+							</span>
+					</li>
+					<li class="ms-5 nav-item nav-item-secondary">
+						<a href="/getwishlist" style="text-decoration: none;">
+							<svg xmlns="http://www.w3.org/2000/svg" height="23" width="23"
+								viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+								<path fill="#cfd1d3"
+									d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+							</svg>
+							<span>Wishlist</span>
+						</a>
+					</li>
+					<li class="ms-5 nav-item nav-item-secondary">
+						<a href="/cartget" style="text-decoration: none;">
+							<svg xmlns="http://www.w3.org/2000/svg" height="23" width="23"
+								viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+								<path fill="#d7dce5"
+									d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
+							</svg>
+							<span>Your Cart</span>
+						</a>
+					</li>
+					<li class="ms-5 nav-item nav-item-secondary">
+						<a class="" style="text-decoration: none; " onclick='openConfirmDeleteModal("/logout")'>
+							Logout
+						</a>
+					</li>
+				</ul>
+			</div>
+
+			<!-- Search Form -->
+			<div class="">
+				<form class="custom-search">
+					<div class="input-group">
+						<input style="background-color: rgb(230, 230, 219); width: 50vh;" type="text" id="searchInput"
+							oninput="performSearch()" autocomplete="off" class="form-control rounded"
+							placeholder="Search...">
+						<div class="input-group-append"></div>
+						<div id="suggestions-container" class="suggestions-container"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</nav>
+
+
+
+
+
+
+
+
+
+	<div class="p-1 py-2 mt-3 bg-light d-flex justify-content-around">
+		<% productsByCategory.forEach((val,index)=>{ %>
+
+			<div>
+				<h5><a style="text-decoration: none;" href="/categorypage/<%= val._id %>">
+						<%= val._id %>
+					</a></h5>
+			</div>
+
+			<% }) %>
+
+	</div>
+
+
+
+
+
+	<div id="carouselExampleFade" class="carousel slide carousel-fade py-3" data-ride="carousel">
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<img src="/img/ethoswatches_desktop12_04_2023_1547181216.webp" class="img-fluid d-block w-100"
+					alt="...">
+			</div>
+			<div class="carousel-item">
+				<img src="/img/RolexDesk1920x6553.webp" class="d-block w-100" alt="...">
+			</div>
+			<div class="carousel-item">
+				<img src="/img/homepage-new-banner-1.jpg" class="d-block w-100" alt="...">
+			</div>
+		</div>
+		<button class="carousel-control-prev" type="button" data-target="#carouselExampleFade" data-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="sr-only">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-target="#carouselExampleFade" data-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="sr-only">Next</span>
+		</button>
+	</div>
+
+
+
+	<div class="ml-5 d-flex justify-content-center">
+		<div>
+			<div class="mb-3">
+				<select class="form-select" id="sortDropdown" onchange="sortProducts(this.value)">
+					<option value="default" selected>Sort Price</option>
+					<option value="asc">Low to High</option>
+					<option value="desc">High to Low</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- container -->
+	<div class="container-fluid d-flex justify-content-around flex-wrap m-0" id="productContainer">
+		<% if(prod.length> 0){ %>
+			<% prod.forEach((val, index)=> { %>
+				<!-- shop -->
+				<div class=" col-md-6 carddiv p-2 bg-white mt-4">
+					<a href="/productpage/<%= val._id %>">
+						<div class="shop">
+							<div class="shop-img">
+								<img src="<%= val.image[0] %>" alt="">
+							</div>
+						</div>
+					</a>
+					<div class="detailscard">
+						<div>
+							<h5>
+								<%= val.productname %><br>
+							</h5>
+							<h6>&#8377;<%= val.price %><br></h6>
+						</div>
+						<div>
+							<a href="/addwishlist/<%= val._id %>"> <svg id="wishlogo" xmlns="http://www.w3.org/2000/svg"
+									height="30" width="30"
+									viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+									<path fill="#f25a5a"
+										d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+								</svg></a>
+						</div>
+					</div>
+					<div>
+						<% if(val.stock < 1){ %>
+							<span class="text-danger">Out of Stock</span>
+							<% } %>
+					</div>
+
+					<div class="d-flex justify-content-sm-end">
+						<a href="/addtocart/<%= val._id %>"><button class="btn btn-outline-success">Add to
+								Cart</button></a>
+					</div>
+				</div>
+				<!-- /shop -->
+				<% }) %>
+					<% } %>
+	</div>
+	<!-- /container -->
+
+
+
+
+
+
+	<div class="pagination">
+		<% if (currentPage> 1) { %>
+			<a href="/categorymanage?page=<%= currentPage - 1 %>&pageSize=<%= pageSize %>">Previous</a>
+			<% } %>
+
+				<% for (let i=1; i <=totalPages; i++) { %>
+					<a href="/categorymanage?page=<%= i %>&pageSize=<%= pageSize %>"
+						class="<%= currentPage === i ? 'active' : '' %>">
+						<%= i %>
+					</a>
+					<% } %>
+
+						<% if (currentPage < totalPages) { %>
+							<a href="/categorymanage?page=<%= currentPage + 1 %>&pageSize=<%= pageSize %>">Next</a>
+							<%}%>
+	</div>
+
+
+
+
+	<div id="hot-deal" class="section bg-dark text-light">
+		<div class="container ">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="hot-deal">
+						<ul class="hot-deal-countdown">
+							<li>
+								<div>
+									<h3>02</h3>
+									<span>Days</span>
+								</div>
+							</li>
+							<li>
+								<div>
+									<h3>10</h3>
+									<span>Hours</span>
+								</div>
+							</li>
+							<li>
+								<div>
+									<h3>34</h3>
+									<span>Mins</span>
+								</div>
+							</li>
+							<li>
+								<div>
+									<h3>60</h3>
+									<span>Secs</span>
+								</div>
+							</li>
+						</ul>
+						<h2 class="text-uppercase">hot deal this week</h2>
+						<p>New Collection Up to 50% OFF</p>
+						<a class="primary-btn cta-btn" href="#">Shop now</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	<!-- FOOTER -->
+	<footer id="footer" class="bg-dark mt-5 border-top-secondary">
+		<!-- container -->
+		<div class="container py-5 ">
+			<div class="row">
+				<div class="col-md-3 col-sm-6">
+					<div class="footer">
+						<h4 class="footer-title">About Us</h4>
+						<ul class="footer-links p-0">
+							<li><a href="#">1734 Stonecoal Road</a></li>
+							<li><a href="#">+021-95-51-84</a></li>
+							<li><a href="#">email@email.com</a></li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="col-md-3 col-sm-6">
+					<div class="footer">
+						<h4 class="footer-title">Categories</h4>
+						<ul class="footer-links p-0">
+							<li><a href="#">Hot deals</a></li>
+							<li><a href="#">Laptops</a></li>
+							<li><a href="#">Smartphones</a></li>
+							<li><a href="#">Cameras</a></li>
+							<li><a href="#">Accessories</a></li>
+						</ul>
+					</div>
+				</div>
+
+
+				<div class="col-md-3 col-sm-6">
+					<div class="footer">
+						<h4 class="footer-title">Information</h4>
+						<ul class="footer-links p-0">
+							<li><a href="#">About Us</a></li>
+							<li><a href="#">Contact Us</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+							<li><a href="#">Orders and Returns</a></li>
+							<li><a href="#">Terms & Conditions</a></li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="col-md-3 col-sm-6">
+					<div class="footer">
+						<h4 class="footer-title">Service</h4>
+						<ul class="footer-links p-0">
+							<li><a href="#">My Account</a></li>
+							<li><a href="#">View Cart</a></li>
+							<li><a href="#">Wishlist</a></li>
+							<li><a href="#">Track My Order</a></li>
+							<li><a href="#">Help</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</footer>
+
+
+
+	</div>
+
+
+
+
+
+
+
+
+	<!-- Modal HTML -->
+	<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
+		aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="confirmDeleteModalLabel">logout</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					Are you sure want to Logout?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-danger" id="confirmDeleteBtn">logout</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- for sorting  -->
+
+	<script>
+		function sortProducts(order) {
+			const requestData = {
+				order: order
+			};
+			fetch(`/sorted`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(requestData)
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(data => {
+					const productsContainer = document.getElementById('productContainer');
+					productsContainer.innerHTML = ''; // Clear existing products
+
+					if (data.products.length > 0) {
+						data.products.forEach(product => {
+							const productDiv = document.createElement('div');
+							productDiv.classList.add('col-md-3');
+							productDiv.innerHTML = `
+            <div class="col-3 carddiv p-2  bg-white mt-4">
+                <a href="/productpage/${product._id}">
+                    <div class="shop">
+                        <div class="shop-img">
+                            <img src="${product.image[0]}" alt="">
+                        </div>
+                    </div>
+                </a>
+                <div class="detailscard">
+                    <div>
+                        <h5>${product.productname}<br></h5>
+                        <h6>&#8377;${product.price}<br></h6>
+                    </div>
+                    <div>
+                        <a href="/addwishlist/${product._id}">
+                            <svg id="wishlogo" xmlns="http://www.w3.org/2000/svg" height="30" width="30" viewBox="0 0 512 512">
+                                <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+                                <path fill="#f25a5a" d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/>
+                            </svg>
+                        </a> 
+                    </div>
+                </div>
+                <div class="d-flex justify-content-sm-between">
+                    <a href="/addtocart/${product._id}"><button class="btn btn-outline-success">Add to Cart</button></a>
+                </div>
+            </div>
+        `;
+							productsContainer.appendChild(productDiv);
+						});
+
+
+					} else {
+						// Handle case where no products are found
+						const noResultDiv = document.createElement('div');
+						noResultDiv.textContent = 'No products found.';
+						productsContainer.appendChild(noResultDiv);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					// Handle errors or display a message to the user
+				});
+		}
+
+
+	</script>
+
+
+	<!-- for pagination -->
+	<script>
+		const urlParams = new URLSearchParams(window.location.search);
+		const page = parseInt(urlParams.get('page')) || 1;
+		const pageSize = parseInt(urlParams.get('pageSize')) || 4;
+		const totalPages = 5; // Update this with the total number of pages
+
+		// Update pagination links with the current page and pageSize
+		const paginationLinks = document.querySelectorAll('.pagination a');
+		paginationLinks.forEach(link => {
+			const linkPage = parseInt(link.getAttribute('href').split('=')[1]) || 1;
+			link.href = ` /userpage?page=${linkPage}&pageSize=${pageSize}`;
+		});
+	</script>
+
+	<script>
+
+		function handleClickOutside(event) {
+			const suggestionsContainer = document.getElementById('suggestions-container');
+			const searchInput = document.getElementById('searchInput');
+
+			if (event.target !== searchInput && !searchInput.contains(event.target)) {
+				suggestionsContainer.style.display = 'none'; // Hide the suggestions when clicking outside
+			}
+		}
+
+		function performSearch() {
+			const searchInput = document.getElementById('searchInput').value;
+			// Make an AJAX request to your server with the search query
+			fetch(`/searchproducts?search=${searchInput}`)
+				.then(response => response.json())
+				.then(data => {
+					// Update the suggestions box with the received data
+					const suggestionsContainer = document.getElementById('suggestions-container');
+					suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+
+					if (data.products.length > 0 || data.categories.length > 0) {
+						data.products.forEach(product => {
+							const suggestionDiv = document.createElement('div');
+							suggestionDiv.classList.add('suggestion-item', 'larger-size');
+							suggestionDiv.textContent = product.productname;
+							suggestionDiv.addEventListener('click', () => {
+								window.location.href = `/productpage/${product._id}`;
+							});
+							suggestionsContainer.appendChild(suggestionDiv);
+
+						});
+
+						data.categories.forEach(category => {
+
+							const suggestionDiv = document.createElement('div');
+							suggestionDiv.classList.add('suggestion-item', 'larger-size');
+							suggestionDiv.textContent = category.category;
+							suggestionDiv.addEventListener('click', () => {
+								window.location.href = `/categorypage/${category.category}`;
+							});
+							suggestionsContainer.appendChild(suggestionDiv);
+						})
+						suggestionsContainer.style.display = 'block';
+					} else {
+						const noSuggestionDiv = document.createElement('div');
+						noSuggestionDiv.classList.add('suggestion-item', 'larger-size');
+						noSuggestionDiv.textContent = 'No products found.';
+						suggestionsContainer.appendChild(noSuggestionDiv);
+						suggestionsContainer.style.display = 'block';
+					}
+					document.addEventListener('click', handleClickOutside);
+				})
+
+				.catch(error => {
+					console.error('Error:', error);
+				})
+		}
+	</script>
+
+
+	<script>
+		function openConfirmDeleteModal(url) {
+			$('#confirmDeleteModal').modal('show')
+			$('#confirmDeleteBtn').click(function () {
+				window.location.href = url
+			});
+		}
+	</script>
+
+
+	<style>
+		/* Custom style for responsive search bar */
+		@media (max-width: 767px) {
+			.custom-search .input-group {
+				width: 100%;
+			}
+		}
+
+
+		#suggestions-container {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: calc(100% - 2px);
+			/* Adjust the width to fit the input */
+			padding-left: 10px;
+			background-color: #fff;
+			border: 1px solid #ced4da;
+			border-radius: 0 0 0.25rem 0.25rem;
+			z-index: 1000;
+			max-height: 200px;
+			overflow-y: auto;
+			display: none;
+		}
+
+		.input-group:focus-within #suggestions-container {
+			display: block;
+		}
+
+		.suggestion-item {
+			padding: 0.5rem;
+			cursor: pointer;
+		}
+
+		.suggestion-item:hover {
+			background-color: #ccd3da;
+		}
+
+		.pagination {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			/* Add this line to center items horizontally */
+			margin-top: 10vh;
+			/* Adjust the top margin as needed */
+		}
+
+		.pagination a {
+			padding: 8px 12px;
+			margin: 0 5px;
+			text-decoration: none;
+			color: #000000;
+			border: 1px solid #ffffff;
+			border-radius: 4px;
+		}
+
+		.pagination a.active {
+			background-color: #878181;
+			color: #ffffff;
+			border-color: #ffffff;
+		}
+	</style>
+
+
+
+
+
+
+
+
+	<%- include('footer') -%>

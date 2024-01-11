@@ -1,0 +1,150 @@
+<%- include('header') -%>
+
+    <style>
+        body {
+
+            background-image: url('/img/rolexwall.png');
+            background-size: cover;
+            /* This ensures the image covers the entire background */
+
+        }
+    </style>
+
+
+    <!-- container -->
+    <div class="container ">
+        <!-- row -->
+        <div class="row ">
+
+
+
+
+
+            <div class="text-center text-dark center-div " id="login" style="padding-top: 10%;">
+                <div class="container-fluid  border-3 bg-light rounded-4 py-4  mt-2 " id="box">
+                    <div class="title pb-3 text-dark">
+                        <h4 class="  ">LOGIN HERE</h4>
+
+
+                    </div>
+
+                    <div id="messageContainer" class="bg-warning"></div>
+
+
+                    <form class="" action="#" method="POST" id="signinForm">
+
+
+                        <div class="m-0 text-start">
+                            <input type="text" class="form-control" placeholder="email" name="email">
+                            <span id="email-error" style="color: red;"></span>
+                        </div>
+
+                        <div class="mt-2 text-start">
+                            <input type="password" class="form-control" placeholder="password" name="password">
+                            <span id="password-error" style="color: red;"></span>
+                        </div>
+                        <div>
+                            <div class="mt-2">
+                                <a href="/emailforgot">forgot password ?</a>
+
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success py-2 rounded-pill mt-2  w-25"> Submit</button>
+
+                        <div class="loginroutes">
+                            <a href="/signup">don't have an account sign up here?</a><br>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Frontend validation using JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('form').addEventListener('submit', async function (event) {
+                console.log('form submitted');
+
+                var emailInput = document.querySelector('input[name="email"]');
+                var passwordInput = document.querySelector('input[name="password"]');
+                var emailErrorMessage = document.getElementById('email-error');
+                var passwordErrorMessage = document.getElementById('password-error');
+
+                // Reset error messages
+                emailErrorMessage.style.display = 'none';
+                passwordErrorMessage.style.display = 'none';
+
+                // Check if email is empty
+                if (emailInput.value.trim() === '') {
+                    emailErrorMessage.innerText = 'Email cannot be empty';
+                    emailErrorMessage.style.display = 'block';
+                    event.preventDefault(); // Prevent form submission
+                } else if (!isValidEmail(emailInput.value.trim())) {
+                    emailErrorMessage.innerText = 'Invalid email format';
+                    emailErrorMessage.style.display = 'block';
+                    event.preventDefault(); // Prevent form submission
+                }
+
+                // Check if password is empty
+                if (passwordInput.value === '') {
+                    passwordErrorMessage.innerText = 'Password cannot be empty';
+                    passwordErrorMessage.style.display = 'block';
+                    event.preventDefault(); // Prevent form submission
+                }
+
+            });
+
+            // Function to validate email format
+            function isValidEmail(email) {
+                // Use a regular expression for basic email format validation
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+        });
+    </script>
+
+    <!-- Async form submission using Fetch -->
+    <script>
+        document.querySelector('form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            // Use FormData to serialize the form data
+            const formData = new FormData(this);
+            try {
+                const response = await fetch('/signinpost', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData), // Manually set content type to application/x-www-form-urlencoded
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                });
+
+                const result = await response.json();
+
+                // Display the message
+                const messageContainer = document.getElementById('messageContainer');
+                messageContainer.innerHTML = `<p>${result.message}</p>`;
+
+                // Show the message container
+                messageContainer.style.display = 'block';
+                setTimeout(() => {
+                    messageContainer.style.display = 'none'
+                }, 10000);
+
+                if (result.success) {
+                    // Redirect to the specified URL if login is successful
+                    window.location.href = result.redirect;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+
+
+
+    <%- include('footer') -%>
