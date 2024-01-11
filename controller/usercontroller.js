@@ -97,7 +97,12 @@ const controls = {
   //home page routers
 
   homeroute: (req, res) => {
+    userdet = req.session.userdetail;
+    if (userdet) {
+      res.redirect("/userpage");
+    } else {
     res.render("userlogin");
+    }
   },
 
   signinget: (req, res) => {
