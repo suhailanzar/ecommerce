@@ -5,59 +5,58 @@
 
             background-image: url('/img/rolexwall.png');
             background-size: cover;
-            /* This ensures the image covers the entire background */
+           
 
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
     </style>
 
 
     <!-- container -->
-    <div class="container ">
-        <!-- row -->
-        <div class="row ">
+    <div class="container">
 
 
+        <div class="container-fluid text-center text-dark center-div border-3 bg-light rounded-4 py-4  mt-2 " id="box">
+            <div class="title pb-3 text-dark">
+                <h4 class="  ">LOGIN HERE</h4>
 
 
+            </div>
 
-            <div class="text-center text-dark center-div " id="login" style="padding-top: 10%;">
-                <div class="container-fluid  border-3 bg-light rounded-4 py-4  mt-2 " id="box">
-                    <div class="title pb-3 text-dark">
-                        <h4 class="  ">LOGIN HERE</h4>
+            <div id="messageContainer" class="bg-warning"></div>
 
+
+            <form class="" action="#" method="POST" id="signinForm">
+
+
+                <div class="m-0 text-start">
+                    <input type="text" class="form-control" placeholder="email" name="email">
+                    <span id="email-error" style="color: red;"></span>
+                </div>
+
+                <div class="mt-2 text-start">
+                    <input type="password" class="form-control" placeholder="password" name="password">
+                    <span id="password-error" style="color: red;"></span>
+                </div>
+                <div>
+                    <div class="mt-2">
+                        <a href="/emailforgot">forgot password ?</a>
 
                     </div>
-
-                    <div id="messageContainer" class="bg-warning"></div>
-
-
-                    <form class="" action="#" method="POST" id="signinForm">
-
-
-                        <div class="m-0 text-start">
-                            <input type="text" class="form-control" placeholder="email" name="email">
-                            <span id="email-error" style="color: red;"></span>
-                        </div>
-
-                        <div class="mt-2 text-start">
-                            <input type="password" class="form-control" placeholder="password" name="password">
-                            <span id="password-error" style="color: red;"></span>
-                        </div>
-                        <div>
-                            <div class="mt-2">
-                                <a href="/emailforgot">forgot password ?</a>
-
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-success py-2 rounded-pill mt-2  w-25"> Submit</button>
-
-                        <div class="loginroutes">
-                            <a href="/signup">don't have an account sign up here?</a><br>
-                        </div>
-                    </form>
                 </div>
-            </div>
+
+                <button type="submit" class="btn btn-success py-2 rounded-pill mt-2  w-25"> Submit</button>
+
+                <div class="loginroutes">
+                    <a href="/signup">don't have an account sign up here?</a><br>
+                </div>
+            </form>
         </div>
     </div>
 
