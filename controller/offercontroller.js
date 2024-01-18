@@ -80,6 +80,34 @@ updateofferget: async (req, res) => {
   }
 },
 
+updateofferpost: async (req, res) => {
+  try {
+
+    const offerid = req.params.id
+    const { product, category, selectedDate, discount } = req.body;
+
+
+    await offer
+    .findByIdAndUpdate(offerid, {
+      product: product,
+        category: category,
+        expiredate: selectedDate,
+        discount: discount,
+    })
+    .then((x) => {
+      console.log("updated");
+      res.redirect("/getoffer");
+    });
+
+
+   
+  } catch (error) {
+    console.log(error);
+  }
+},
+
+
+
 deleteoffer:async(req,res)=>{
   try {
 

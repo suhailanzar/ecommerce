@@ -23,6 +23,7 @@ router.get('/addoffer',checksession,offer.addoffer)
 router.post('/addofferpost',checksession,offer.addofferpost)
 router.get('/addoffercategory',checksession,offer.addoffercategory)
 router.get('/updateoffer/:id',checksession,offer.updateofferget)
+router.post('/updateofferpost/:id',checksession,offer.updateofferpost)
 router.get('/deleteoffer/:id',checksession,offer.deleteoffer)
 
 

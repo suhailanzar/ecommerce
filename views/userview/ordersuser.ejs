@@ -143,20 +143,18 @@
                                     <td><%- newval.status %></td>
     
                                     <%
-                                        const formattedDate = new Date(val.orderdate).toLocaleDateString('en-US', {
-                                            weekday: 'short',
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric'
-                                        });
-                                        const formattedTime = new Date(val.orderdate).toLocaleTimeString('en-US', {
-                                            hour: 'numeric',
-                                            minute: 'numeric',
-                                            hour12: true
-                                        });
-                                    %>
-    
-                                    <td><%= formattedDate %> <%= formattedTime %></td>
+                                  
+
+                                    const formattedDate = new Date(val.orderdate).toLocaleDateString('en-US', {
+                                      weekday: 'short' , month: 'short' , day: 'numeric' , year: 'numeric'
+                                    });
+                                  
+                                    const formattedTimeIST = new Date(val.orderdate).toLocaleString('en-IN', {
+                                      timeZone: 'Asia/Kolkata',
+                                      hour: 'numeric' , minute: 'numeric' , hour12: true
+                                    });
+                                  %>
+                                    <td><%= formattedDate %> <%= formattedTimeIST %></td>
                                     <td>
                                         <% if (newval.status !== 'Delivered' && newval.status !== 'Cancelled' && newval.status !== 'Returned') { %>
                                             <% if (newval.status !== 'Cancelled') { %>

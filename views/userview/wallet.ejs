@@ -146,12 +146,17 @@
                                         <% walletdetails.forEach((val, index)=> { %>
                                             <tr>
                                                 <td><%- val.amount %></td>
-                                                <% const formattedDate=new Date(val.date).toLocaleDateString('en-US', {
-                                                    weekday: 'short' , month: 'short' , day: 'numeric' , year: 'numeric'
-                                                    }); const formattedTime=new
-                                                    Date(val.date).toLocaleTimeString('en-US', { hour: 'numeric' ,
-                                                    minute: 'numeric' , hour12: true }); %>
-                                                    <td><%- formattedDate %> - <%- formattedTime %></td>
+                                                <% 
+                                                const formattedDate = new Date(val.date).toLocaleDateString('en-US', {
+                                                  weekday: 'short' , month: 'short' , day: 'numeric' , year: 'numeric'
+                                                });
+                                              
+                                                const formattedTimeIST = new Date(val.date).toLocaleString('en-IN', {
+                                                  timeZone: 'Asia/Kolkata',
+                                                  hour: 'numeric' , minute: 'numeric' , hour12: true
+                                                });
+                                              %>
+                                                    <td><%- formattedDate %> - <%- formattedTimeIST %></td>
                                                     <td><%- val.status %></td>
                                             </tr>
                                             <% }) %>
