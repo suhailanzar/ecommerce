@@ -10,7 +10,7 @@ const wishlist = require("../model/wishlist");
 const offer = require("../model/offer");
 const crypto = require("crypto");
 const { MongoClient, ObjectId } = require("mongodb");
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 require("dotenv").config();
